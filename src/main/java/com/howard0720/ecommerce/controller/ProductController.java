@@ -48,16 +48,9 @@ public class ProductController {
         }
     }
 
-    @DeleteMapping("/products{productId}")
+    @DeleteMapping("/products/{productId}")
     public ResponseEntity<Product> deleteProduct(@PathVariable Integer productId){
-        Product product = productService.getProductById(productId);
-
-        if (product != null){
             productService.deleteProductById(productId);
-            return  ResponseEntity.status(HttpStatus.OK).body(product);
-        }
-        else {
-            return  ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+            return  ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
