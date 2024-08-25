@@ -1,7 +1,7 @@
 package com.howard0720.ecommerce.service.Impl;
 
-import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import com.howard0720.ecommerce.dao.ProductDao;
+import com.howard0720.ecommerce.dto.ProductRequest;
 import com.howard0720.ecommerce.model.Product;
 import com.howard0720.ecommerce.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void insertProduct(Product product) {
-        productDao.insertProduct(product);
+    public Integer createProduct(ProductRequest productRequest) {
+
+        return productDao.createProduct(productRequest);
     }
 }
