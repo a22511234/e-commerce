@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,5 +34,41 @@ public class ProductDaoImpl implements ProductDao {
             return null;
         }
 
+    }
+    @Override
+    public void deleteProductById(Integer productId) {
+        String sql = "DELETE FROM product WHERE product_id = :productId";
+        Map<String, Object> map = new HashMap<>();
+        map.put("productId",productId);
+        namedParameterJdbcTemplate.update(sql,map);
+    }
+
+    @Override
+    public void insertProduct(Product product) {
+        String sql = "INSERT INTO product (product_name, category, image_url, price, stock, description, created_date, last_modified_date) VALUES (:productName,:category,:imageUrl,:price,:stock,:description,:createdDate,:lastModifiedDate)";
+        Map<String, Object> map = new HashMap<>();
+        map.put("productName",product.getProductId());
+        map.put("category",product.getCategory());
+        map.put("imageUrl",product.getImageUrl());
+        map.put("price",product.getPrice());
+        map.put("stock",product.getStock());
+        map.put("description",product.getDescription());
+        map.put("createdDate",product.getCreatedDate());
+        map.put("lastModifiedDate",product.getLastModifiedDate());
+        namedParameterJdbcTemplate.update(sql,map);
+    }
+    @Override
+    public void updateProduct(Product product) {
+        String sql = "INSERT INTO product (product_name, category, image_url, price, stock, description, created_date, last_modified_date) VALUES (:productName,:category,:imageUrl,:price,:stock,:description,:createdDate,:lastModifiedDate)";
+        Map<String, Object> map = new HashMap<>();
+        map.put("productName",product.getProductId());
+        map.put("category",product.getCategory());
+        map.put("imageUrl",product.getImageUrl());
+        map.put("price",product.getPrice());
+        map.put("stock",product.getStock());
+        map.put("description",product.getDescription());
+        map.put("createdDate",product.getCreatedDate());
+        map.put("lastModifiedDate",new Date());
+        namedParameterJdbcTemplate.update(sql,map);
     }
 }
