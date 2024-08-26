@@ -1,6 +1,8 @@
 package com.howard0720.ecommerce.dao.impl;
 
+import com.howard0720.ecommerce.constant.ProductCategory;
 import com.howard0720.ecommerce.dao.ProductDao;
+import com.howard0720.ecommerce.dto.ProductQueryParrams;
 import com.howard0720.ecommerce.dto.ProductRequest;
 import com.howard0720.ecommerce.model.Product;
 import com.howard0720.ecommerce.rowmapper.ProductRowMapper;
@@ -79,5 +81,30 @@ public class ProductDaoImpl implements ProductDao {
         map.put("description",productRequest.getDescription());
         map.put("lastModifiedDate",new Date());
         namedParameterJdbcTemplate.update(sql,map);
+    }
+
+    @Override
+    public List<Product> getProducts(ProductQueryParrams productQueryParrams) {
+        String sql="SELECT product_id, product_name, category, image_url, price,stock, description, created_date, " +
+                "last_modified_date from product where 1=1";
+        Map<String, Object> map = new HashMap<>();
+        //search
+        if(productQueryParrams.getCategory() != null){
+            sql+=" AND category = :category";
+            map.put("category",productQueryParrams.getCategory().name());
+        }
+        if(productQueryParrams.getSearch() != null){
+            sql+=" AND product_name LIKE :search";
+            map.put("search","%"+productQueryParrams.getSearch()+"%");
+        }
+        //order
+        sql+=" ORDER BY "+ productQueryParrams.getOrderBy()+" "+ productQueryParrams.getSort();
+
+        //page
+        sql+=" LIMIT :limit OFFSET :offset";
+        map.put("limit",productQueryParrams.getLimit());
+        map.put("offset",productQueryParrams.getOffset());
+        List<Product> productList= namedParameterJdbcTemplate.query(sql,map,new ProductRowMapper());
+        return productList;
     }
 }
