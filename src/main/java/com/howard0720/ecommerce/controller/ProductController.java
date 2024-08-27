@@ -5,6 +5,7 @@ import com.howard0720.ecommerce.dto.ProductQueryParrams;
 import com.howard0720.ecommerce.dto.ProductRequest;
 import com.howard0720.ecommerce.model.Product;
 import com.howard0720.ecommerce.service.ProductService;
+import com.howard0720.ecommerce.util.Page;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -44,6 +45,37 @@ public class ProductController {
 
         List<Product> productList = productService.getProducts(productQueryParrams);
         return ResponseEntity.status(HttpStatus.OK).body(productList);
+    }
+
+    @GetMapping("/productss")
+    public ResponseEntity<Page<Product>> getProducts2(
+            //filtering
+            @RequestParam(required = false) ProductCategory category,
+            @RequestParam(required = false) String search,
+            //sorting
+            @RequestParam(defaultValue = "created_date") String orderBy,
+            @RequestParam(defaultValue = "desc") String sort,
+            //Pagination
+            @RequestParam(defaultValue = "5") @Max(1000) @Min(0) Integer limit,
+            @RequestParam(defaultValue = "0") @Min(0) Integer offset
+    ){
+        ProductQueryParrams productQueryParrams = new ProductQueryParrams();
+        productQueryParrams.setCategory(category);
+        productQueryParrams.setSearch(search);
+        productQueryParrams.setOrderBy(orderBy);
+        productQueryParrams.setSort(sort);
+        productQueryParrams.setLimit(limit);
+        productQueryParrams.setOffset(offset);
+
+        List<Product> productList = productService.getProducts(productQueryParrams);
+        Integer total = productService.countProducts(productQueryParrams);
+        Page<Product> page =new Page<>();
+        page.setLimit(limit);
+        page.setOffset(offset);
+        page.setTotal(total);
+        page.setResults(productList);
+
+        return ResponseEntity.status(HttpStatus.OK).body(page);
     }
 
     @GetMapping("/products/{productId}")
