@@ -1,6 +1,7 @@
 package com.howard0720.ecommerce.dao.impl;
 
 import com.howard0720.ecommerce.dao.UserDao;
+import com.howard0720.ecommerce.dto.UserLoginRequest;
 import com.howard0720.ecommerce.dto.UserRegisterRequest;
 import com.howard0720.ecommerce.model.User;
 import com.howard0720.ecommerce.rowmapper.UserRowMapper;
@@ -72,4 +73,6 @@ public class UserDaoImpl implements UserDao {
             return null;
         }
     }
+
+
 }

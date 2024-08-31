@@ -1,5 +1,6 @@
 package com.howard0720.ecommerce.controller;
 
+import com.howard0720.ecommerce.dto.UserLoginRequest;
 import com.howard0720.ecommerce.dto.UserRegisterRequest;
 import com.howard0720.ecommerce.model.Product;
 import com.howard0720.ecommerce.model.User;
@@ -35,5 +36,12 @@ public class UserController {
         else {
             return  ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+    }
+    @PostMapping("/users/login")
+    public ResponseEntity<User> login(@RequestBody @Valid UserLoginRequest userLoginRequest){
+        User user = userService.login(userLoginRequest);
+
+        return  ResponseEntity.status(HttpStatus.CREATED).body(user);
+
     }
 }

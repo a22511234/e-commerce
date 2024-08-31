@@ -1,6 +1,7 @@
 package com.howard0720.ecommerce.service.Impl;
 
 import com.howard0720.ecommerce.dao.UserDao;
+import com.howard0720.ecommerce.dto.UserLoginRequest;
 import com.howard0720.ecommerce.dto.UserRegisterRequest;
 import com.howard0720.ecommerce.model.User;
 import com.howard0720.ecommerce.service.UserService;
@@ -34,5 +35,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserById(Integer userId) {
         return userDao.getUserById(userId);
+    }
+
+    @Override
+    public User login(UserLoginRequest userLoginRequest) {
+        User user = userDao.getUserByEmail(userLoginRequest.getEmail());
+        if(user==null){
+            log.warn("該email {} 尚未被註冊了！",userLoginRequest.getEmail());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        } else if (user.getPassword().equals(userLoginRequest.getPassword())) {
+            return user;
+        }
+        else {
+            log.warn("該email {} 密碼不正確！",userLoginRequest.getEmail());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
     }
 }
