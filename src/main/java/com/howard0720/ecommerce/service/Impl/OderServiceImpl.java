@@ -1,14 +1,14 @@
 package com.howard0720.ecommerce.service.Impl;
 
-import com.howard0720.ecommerce.dao.OderDao;
+import com.howard0720.ecommerce.dao.OrderDao;
 import com.howard0720.ecommerce.dao.ProductDao;
 import com.howard0720.ecommerce.dto.BuyItem;
 import com.howard0720.ecommerce.dto.CreateOderRequest;
+import com.howard0720.ecommerce.model.Order;
 import com.howard0720.ecommerce.model.OrderItem;
 import com.howard0720.ecommerce.model.Product;
 import com.howard0720.ecommerce.service.OderService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.relational.core.sql.In;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,13 +18,13 @@ import java.util.List;
 @Component
 public class OderServiceImpl implements OderService {
     @Autowired
-    private OderDao oderDao;
+    private OrderDao orderDao;
     @Autowired
     private ProductDao productDao;
 
     @Transactional
     @Override
-    public Integer creteOder(Integer userId, CreateOderRequest createOderRequest) {
+    public Integer createOder(Integer userId, CreateOderRequest createOderRequest) {
         int totalAmount = 0;
         List<OrderItem> orderItemdList =new ArrayList<>();
         for (BuyItem buyItem : createOderRequest.getBuyItemList()) {
@@ -39,8 +39,16 @@ public class OderServiceImpl implements OderService {
             orderItemdList.add(orderItem);
         }
 
-        Integer orderId = oderDao.creteOder(userId, (Integer)totalAmount);
-        oderDao.createOderItems(orderId, orderItemdList);
+        Integer orderId = orderDao.creteOder(userId, (Integer)totalAmount);
+        orderDao.createOderItems(orderId, orderItemdList);
         return orderId;
+    }
+
+    @Override
+    public Order getOrderById(Integer orderId) {
+        Order order = orderDao.getOrderById(orderId);
+        List<OrderItem> orderItemList = orderDao.getOrderItemsByOrderId(orderId);
+        order.setOrderItemList(orderItemList);
+        return order;
     }
 }

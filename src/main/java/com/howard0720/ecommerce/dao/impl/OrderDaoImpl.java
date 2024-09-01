@@ -1,7 +1,10 @@
 package com.howard0720.ecommerce.dao.impl;
 
-import com.howard0720.ecommerce.dao.OderDao;
+import com.howard0720.ecommerce.dao.OrderDao;
+import com.howard0720.ecommerce.model.Order;
 import com.howard0720.ecommerce.model.OrderItem;
+import com.howard0720.ecommerce.rowmapper.OrderItemRowMapper;
+import com.howard0720.ecommerce.rowmapper.OrderRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -15,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class OderDaoImpl implements OderDao {
+public class OrderDaoImpl implements OrderDao {
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -57,5 +60,34 @@ public class OderDaoImpl implements OderDao {
 
         namedParameterJdbcTemplate.batchUpdate(sql,parameterSources);
 
+    }
+
+    @Override
+    public Order getOrderById(Integer orderId) {
+        String sql = "SELECT order_id,user_id,total_amount,created_date,last_modified_date from `order` WHERE order_id= :orderId";
+
+        Map<String,Object> map =new HashMap<>();
+        map.put("orderId",orderId);
+
+        List<Order> orderList =namedParameterJdbcTemplate.query(sql,map,new OrderRowMapper());
+
+        if(orderList.size()>0){
+            return  orderList.get(0);
+        }
+        else{
+            return null;
+        }
+    }
+
+    @Override
+    public List<OrderItem> getOrderItemsByOrderId(Integer orderId) {
+        String sql = "SELECT oi.order_item_id,oi.order_id,oi.product_id,oi.quantity,oi.amount,p.product_name,p.image_url from order_item as oi LEFT JOIN product p on oi.product_id = p.product_id WHERE oi.order_id= :orderId";
+
+        Map<String,Object> map =new HashMap<>();
+        map.put("orderId",orderId);
+
+        List<OrderItem> orderItemList =namedParameterJdbcTemplate.query(sql,map,new OrderItemRowMapper());
+
+        return orderItemList;
     }
 }
