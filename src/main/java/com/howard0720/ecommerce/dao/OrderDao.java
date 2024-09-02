@@ -1,5 +1,6 @@
 package com.howard0720.ecommerce.dao;
 
+import com.howard0720.ecommerce.dto.OrdertQueryParrams;
 import com.howard0720.ecommerce.model.Order;
 import com.howard0720.ecommerce.model.OrderItem;
 
@@ -13,4 +14,8 @@ public interface OrderDao {
     Order getOrderById(Integer orderId);
 
     List<OrderItem> getOrderItemsByOrderId(Integer orderId);
+
+    List<Order> getOrders(OrdertQueryParrams ordertQueryParrams);
+
+    Integer countOrder(OrdertQueryParrams ordertQueryParrams);
 }

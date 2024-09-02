@@ -5,6 +5,7 @@ import com.howard0720.ecommerce.dao.ProductDao;
 import com.howard0720.ecommerce.dao.UserDao;
 import com.howard0720.ecommerce.dto.BuyItem;
 import com.howard0720.ecommerce.dto.CreateOderRequest;
+import com.howard0720.ecommerce.dto.OrdertQueryParrams;
 import com.howard0720.ecommerce.model.Order;
 import com.howard0720.ecommerce.model.OrderItem;
 import com.howard0720.ecommerce.model.Product;
@@ -75,5 +76,22 @@ public class OderServiceImpl implements OderService {
         List<OrderItem> orderItemList = orderDao.getOrderItemsByOrderId(orderId);
         order.setOrderItemList(orderItemList);
         return order;
+    }
+
+    @Override
+    public List<Order> getOrders(OrdertQueryParrams ordertQueryParrams) {
+        List<Order> orderList =orderDao.getOrders(ordertQueryParrams);
+        for (Order order:orderList){
+            List<OrderItem> orderItemList=orderDao.getOrderItemsByOrderId(order.getOrderId());
+
+            order.setOrderItemList(orderItemList);
+        }
+        return orderList;
+
+    }
+
+    @Override
+    public Integer countOrder(OrdertQueryParrams ordertQueryParrams) {
+        return orderDao.countOrder(ordertQueryParrams);
     }
 }
